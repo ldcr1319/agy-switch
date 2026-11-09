@@ -740,7 +740,7 @@ fn generation_event(blob: &[u8], step_timestamp: Option<i64>) -> Option<Generati
         .checked_add(output_tokens)?;
 
     Some(GenerationEvent {
-        model: label.or(model_id).unwrap_or_else(|| "未知模型".to_string()),
+        model: model_id.or(label).unwrap_or_else(|| "未知模型".to_string()),
         input_tokens,
         output_tokens,
         cached_tokens,
@@ -814,7 +814,7 @@ mod tests {
     #[test]
     fn decodes_native_generation_usage() {
         let event = generation_event(&generation_blob(), None).expect("generation should decode");
-        assert_eq!(event.model, "Gemini 3.8 Flash (High)");
+        assert_eq!(event.model, "gemini-3.8-flash-high");
         assert_eq!(event.input_tokens, 300);
         assert_eq!(event.output_tokens, 30);
         assert_eq!(event.cached_tokens, 50);

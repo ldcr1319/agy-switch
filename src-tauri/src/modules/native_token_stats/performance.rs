@@ -57,7 +57,7 @@ pub(super) fn sample(blob: &[u8], timestamp: Option<i64>, source: &str) -> Optio
         return None;
     }
     Some(Sample {
-        model: string_field(21, wrapped).or_else(|| string_field(19, wrapped))?,
+        model: string_field(19, wrapped).or_else(|| string_field(21, wrapped))?,
         source: source.to_string(),
         timestamp: timestamp?,
         first_text_seconds,
