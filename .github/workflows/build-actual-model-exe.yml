@@ -1,0 +1,37 @@
+name: Build Windows EXE only (no installer)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-windows-exe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+
+      - name: Build executables (skip NSIS bundling)
+        run: |
+          npm ci
+          npm run tauri build -- --no-bundle -- --locked
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: agy-switch-windows-exe
+          path: |
+            src-tauri/target/release/agy-switch-desktop.exe
+            src-tauri/target/release/agy-switch.exe
+          if-no-files-found: error
